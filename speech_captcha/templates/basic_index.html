@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Speech Captcha</title>
+</head>
+<body>
+    <h2 id='prompt'>Prompt:</h2>
+    
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous">
+    </script>
+    <script>
+        $.ajax({
+            type: 'GET',
+            url: '/captcha/get_sentence'
+        }).done(function(data){
+            $(data).insertAfter('#prompt');
+        });
+        
+    </script>
+   <!--  <h3>{{ sentence }}</h3>
+    <form enctype="multipart/form-data" method="post" action='/captcha/upload_audio'>
+        <input name='transcript' type='hidden' value='{{ sentence }}' ></input>
+        <input name='speech' type="file" accept="audio/*;capture=microphone"></input>
+        <input type="submit" name="submit"></input>
+        {% csrf_token %}
+    </form> -->
+
+    <h2>Result</h2>
+    <p>Label: {{ label }}</p>
+    <p>ASR Output: {{ transcript }}</p>
+    <p>ASR Score: {{ score }}</p>
+</body>
+</html>>

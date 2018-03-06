@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Speech Captcha</title>
+</head>
+<body>
+	<h2>Prompt:</h2>
+	<h3>{{ sentence }}</h3>
+	<!-- <form enctype="multipart/form-data" method="post" action='/captcha/upload_audio'>
+		<input name='speech' type="file" accept="audio/*;capture=microphone"></input>
+		<input type="submit" name="submit"></input>
+		{% csrf_token %}
+	</form> -->
+	<script
+	  src="https://code.jquery.com/jquery-2.2.4.min.js"
+	  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+	  crossorigin="anonymous">
+	</script>
+
+	<script type="text/javascript" src="/static/js/recorder.js"></script>
+	<input onclick="startRecording()" type="button" value="start recording" />
+    <input onclick="stopRecording()" type="button" value="stop recording and play" />
+
+    <script>
+      function uploadBlob(blob, url){
+		    // create a blob here for testing
+		    // var blob = new Blob(["i am a blob"]);
+		    //var blob = yourAudioBlobCapturedFromWebAudioAPI;// for example   
+		    var reader = new FileReader();
+		    // this function is triggered once a call to readAsDataURL returns
+		    reader.onload = function(event){
+		        var fd = new FormData();
+		        fd.append('fname', 'test.txt');
+		        fd.append('data', event.target.result);
+		        $.ajax({
+		            type: 'POST',
+		            url: url,
+		            data: fd,
+		            processData: false,
+		            contentType: false
+		        }).done(function(data) {
+		            // print the output from the upload.php script
+		            console.log(data);
+		        });
+		    };      
+		    // trigger the read from the reader...
+		    reader.readAsDataURL(blob);
+
+		}
+		var onFail = function(e) {
+			console.log('Rejected!', e);
+		};
+
+		var onSuccess = function(s) {
+			var context = new webkitAudioContext();
+			var mediaStreamSource = context.createMediaStreamSource(s);
+			recorder = new Recorder(mediaStreamSource);
+			recorder.record();
+
+			// audio loopback
+			// mediaStreamSource.connect(context.destination);
+		}
+
+		window.URL = window.URL || window.webkitURL;
+		navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+		var recorder;
+		var audio = document.querySelector('audio');
+
+		function startRecording() {
+		if (navigator.getUserMedia) {
+			navigator.getUserMedia({audio: true}, onSuccess, onFail);
+		} else {
+			console.log('navigator.getUserMedia not present');
+		}
+		}
+
+		function stopRecording() {
+			recorder.stop();
+			recorder.exportWAV(function(s) {
+				// audio.src = window.URL.createObjectURL(s);
+				uploadBlob(s, "/captcha/upload_audio");
+			});
+		}
+    </script>
+
+	<h2>Result</h2>
+	<p>Label: {{ label }}</p>
+	<p>ASR Output: {{ transcript }}</p>
+	<p>ASR Score: {{ score }}</p>
+</body>
+</html>>

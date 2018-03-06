@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Speech Captcha: Corpus Enrollment</title>
+</head>
+<body>
+    <h1>Corpus Enrollment</h1>
+    <h3>To enroll a corpus upload a text file containing all the transcripts of all the utterances. The transcripts should not have any special characters, including punctuation marks.</h3>
+    <p color='red'>{{ error }}</p>
+    <p>{{ response }}</p>>
+    <form enctype="multipart/form-data" method="post" action='/captcha/enroll_corpus'>
+        <p>Corpus Name</p>
+        <input name='corpus_name' type='text'>
+        <p>Language</p>
+        <select name="language">
+          <option value="english">English</option>
+        </select>
+        <p>Transcript File</p>
+        <input name='transcript' type="file" accept="text/*">
+        <input type="submit" name="submit">
+        {% csrf_token %}
+    </form>
+</body>
+</html>
